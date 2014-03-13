@@ -1,0 +1,18 @@
+<html>
+	<head>
+		{% load staticfiles %}
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href={% static "fb_crawler/main.css" %} rel="stylesheet" type="text/css" media="all"/>
+	</head>
+	<body>
+		<a href={% url "crawler_all" %}>All Crawl Requests</a>
+		<hr />
+		<form method="POST" action={% url "crawler_new" %}>
+			{% csrf_token %}
+			<table>
+			{{ crawl_request_form }}
+			</table>
+			<input type="submit" value="Submit Crawl Request"/>
+		</form>
+	</body>
+</html>

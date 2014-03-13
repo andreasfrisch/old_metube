@@ -1,0 +1,6 @@
+.form_error {
+	color:#f00;
+}
+.form_required {
+	border:1px solid #f00;
+}

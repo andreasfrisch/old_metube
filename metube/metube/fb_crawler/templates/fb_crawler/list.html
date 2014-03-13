@@ -1,0 +1,14 @@
+<html>
+	<body>
+		<h3>WIP: Facebook Crawler</h3>
+		<a href={% url "home" %}>Home</a>
+		<a href={% url "crawler_new" %}>New request</a>
+
+		<ul>All Requests
+		{% for crawl in crawl_requests %}
+		<li>[{{ crawl.created_date }}] {{ crawl.facebook_id }} -
+			{% if crawl.status == "COM" %}<a href={% url "crawler_get_file" "csv" crawl.pk %}>CSV</a>{% endif %}
+		{% endfor %}
+		</ul>
+	</body>
+</html>

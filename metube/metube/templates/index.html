@@ -1,0 +1,14 @@
+<html>
+	<head>
+		{% load staticfiles %}
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href={% static "main.css" %} rel="stylesheet" type="text/css" media="all"/>
+	</head>
+	<body>
+		<h3 class="ugly">WIP: Metube</h3>
+		<ul>For perusal
+			<li><a href={% url "tracker_home" %}>Project Tracker</li>
+			<li><a href={% url "crawler_all" %}>Facebook Crawler</li>
+		</ul>
+	</body>
+</html>
