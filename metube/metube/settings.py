@@ -77,6 +77,54 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Logging
+LOGGING = {
+	"version": 1,
+	"disable_existing_loggers": False,
+	# available logging formats
+	"formatters": {
+		"verbose": {
+			"format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+			"datefmt": "%d/%b/%Y %H:%M:%S"
+		},
+		"simple": {
+			"format": "%(levelname)s %(message)s"	
+		},
+
+	},
+	# "filters": {},
+	"handlers": {
+		#"default": {
+		#	"level": "DEBUG",
+		#	"class": "logging.handlers.RotatingFileHandler",
+		#	"filename": "default.log",
+		#	"formatter": "simple",
+		#},
+		"file": {
+			"level": "DEBUG", # all levels
+			"class": "logging.FileHandler",
+			"filename": "/tmp/metube.log",
+			"formatter": "verbose"
+
+		},	
+	},
+	"loggers": {
+		#"": {
+		#	"handlers": ["default"],
+		#	"level": "DEBUG",
+		#	"propagate": True
+		#},
+		#"django": {
+		#	"handlers": ["file"],
+		#	"propagate": True,
+		#	"level": "DEBUG",
+		#},
+		"metube": {
+			"handlers": ["file"],
+			"level": "DEBUG",
+		},
+	}
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -84,12 +132,15 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "../static")
 STATICFILES_DIRS = (
-	os.path.join(BASE_DIR, "metube/static"),
+	os.path.abspath(os.path.join(BASE_DIR, "metube/static")),
 )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "../media")
+MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../media"))
 
 TEMPLATE_DIRS = (
 	os.path.join(BASE_DIR, "metube/templates"),		
 )
+
+# Name of media folder for crawler result files
+CRAWLER_RESULTS = "crawler_results"

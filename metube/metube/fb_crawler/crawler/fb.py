@@ -2,8 +2,12 @@
 import httplib2
 import json
 from dateutil import parser
+import logging
+
+logger = logging.getLogger("metube")
 
 def handle_comments(post_identifier, options):
+	logger.debug("Getting comments for post: %s" % post_identifier)
 	done = False
 	page = 0
 	pageLimit = 200
@@ -63,6 +67,7 @@ def handle_comments(post_identifier, options):
 	return len(comments), return_text
 
 def get_likes(post_identifier, options):
+	logger.debug("Getting likes for post: %s" % post_identifier)
 	h = httplib2.Http()
 	url = "https://graph.facebook.com/" + post_identifier + "/likes" \
 		+ "?access_token=" + options["access_token"] \
@@ -79,8 +84,10 @@ def get_likes(post_identifier, options):
 		return "n/a"
 
 def handle_facebook_post(post, options):
+	logger.debug("Handle post: %s" % post)
+	print(">>>>\tHandling a new post")
 	post_datetime = parser.parse(post["created_time"])
-	comment_amount, comment_string = u"n/a", ""
+	comment_amount, comment_string = u"n/a", u""
 	if options["include_comments"]:
 		comment_amount, comment_string = handle_comments(post['id'], options)
 	else:
@@ -110,25 +117,28 @@ def handle_facebook_post(post, options):
 def handle_facebook_id(facebook_id, options):
 	result_string = ""
 	if facebook_id is not "":
-		h = httplib2.Http()
 		done = False
 		page = 0
 		pageLimit = 200
-		#url = 'https://graph.facebook.com/' + str(facebook_id) + \
-		#		'/posts?access_token=' + opt_dict['access_token']
-				#+ '&filter=toplevel&fields=from,message,comments.limit(0),like_count,created_time'
 		while not done:
-			url = "https://graph.facebook.com/" + str(facebook_id) + "/posts" \
-					+ "?access_token=" + options["access_token"] \
-					+ "&limit=" + str(pageLimit)\
-					+ "&offset=" + str(page*pageLimit)
-			response, content = h.request(url)
+			print(">>> not done yet")
+			url = "https://graph.facebook.com/%s/posts?access_token=%s&limit=%s&offset=%s" % (
+					str(facebook_id),
+					options["access_token"],
+					str(pageLimit),
+					str(page*pageLimit)
+			)
+			print(">>> getting: %s" % url)
+			response, content = httplib2.Http().request(url, "GET")
+			print(">>> success! parsing ...")
 			#post_page = content.decode(encoding="utf-8")
 			post_page = json.loads(content, "utf-8")
 				#	.replace("false", "False")
 				#	.replace("true", "True")
 				#)
+			print(">>>> success! got a post")
 			if "data" in post_page:
+				print(">>>>\t post has data")
 				for post in post_page["data"]:
 					post_created_time = parser.parse(post["created_time"]).date()
 					if post_created_time < options["from_date"]:
@@ -141,4 +151,5 @@ def handle_facebook_id(facebook_id, options):
 			else:
 				done = True
 				continue
+		print(">>> done!")
 	return result_string

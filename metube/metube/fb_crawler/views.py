@@ -2,7 +2,7 @@ import os
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.staticfiles.views import serve
-from metube.settings import MEDIA_ROOT
+from metube.settings import MEDIA_ROOT, CRAWLER_RESULTS
 from metube.fb_crawler.models import CrawlRequest, CrawlRequestForm
 from metube.fb_crawler.crawler.request_manager import manage_requests
 
@@ -41,5 +41,5 @@ def get_file(request, filetype, request_id):
 		#		MEDIA_ROOT,
 		#		"%s.%s" % (crawler_object.filename, filetype))
 		#return serve(request, filepath)
-		return HttpResponseRedirect("/media/crawler_results/%s.%s" % (crawler_object.filename, filetype))
+		return HttpResponseRedirect("/media/%s/%s.%s" % (CRAWLER_RESULTS, crawler_object.filename, filetype))
 	return HttpResponseRedirect(reverse("crawler_all"))

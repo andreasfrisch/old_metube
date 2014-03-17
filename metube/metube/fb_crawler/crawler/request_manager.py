@@ -2,13 +2,19 @@ import threading
 import httplib2
 import codecs
 import time
+import logging
+import os
+import gobject
 from time import sleep
 from metube.fb_crawler.models import CrawlRequest
 from metube.fb_crawler.crawler.fb import handle_facebook_id
-from metube.settings import MEDIA_ROOT
+from metube.settings import MEDIA_ROOT, CRAWLER_RESULTS
 from settings import APP_ID, APP_SECRET
 from dateutil import parser
 #from csv2pdf import csv2pdf
+
+gobject.threads_init()
+logger = logging.getLogger("metube")
 
 def manage_requests():
 	# If we are working, do nothing
@@ -19,6 +25,7 @@ def manage_requests():
 		if len(requests) > 0:
 			request_thread = RequestHandler(requests[0].pk)
 			request_thread.start()
+			request_thread.join()
 		return
 
 class RequestHandler(threading.Thread):
@@ -27,49 +34,76 @@ class RequestHandler(threading.Thread):
 		self.request_id = request_identifier
 		
 	def run(self):
+		logger.debug("> Handling request id %s [start]" % self.request_id)
+		print("1")
+
 		# Mark request as in progress
-		request = CrawlRequest.objects.get(id=self.request_id)
+		try:
+			request = CrawlRequest.objects.get(pk=self.request_id)
+		except:
+			logger.error("No CrawlRequest with ID:%s found" % self.request_id)
+			print("no crawl request found")
+			return
+		
+		logger.debug(">> Found object [%s]" % request)
+		print("2")
 		
 		request.status = "INP"
 		request.save()
+		
+		logger.debug(">> request status INP")
+		print("3")
 
 		# Perform!
-		print "handling request (%s): %s" % (request.id, request.tag)
 		# Get Access token
-		h = httplib2.Http()
-		url = 'https://graph.facebook.com/oauth/access_token?client_id='+APP_ID+'&client_secret='+APP_SECRET+'&grant_type=client_credentials'
-		response, content = h.request(url)
-		
+		response, content = httplib2.Http(".cache").request(
+				"https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials" % (APP_ID, APP_SECRET),
+				"GET"
+		)
 		access_token = str(content).split('=')[-1]
+		logger.debug(">> got access_token: %s" % access_token)
+		print("4")
 
 		# Get facebook data
 		options = {}
 		options["access_token"] = access_token
-		options["from_date"] = request.start_date
-		options["to_date"] = request.end_date
+		options["from_date"] = request.from_date
+		options["to_date"] = request.to_date
 		options["include_comments"] = request.include_comments
 		
-		result = handle_facebook_id(request.fb_id, options)
+		logger.debug(">> handle facebook id [start]")
+		print("5")
+		
+		result = handle_facebook_id(request.facebook_id, options)
+		
+		logger.debug(">> handle facebook id [end]")
+		print("6")
 
 		# Write to CSV file
-		filename = os.path.join(MEDIA_ROOT, "fb_crawler/[%s__%s]_%s" % (
-			request.created_date.strftime("%Y_%m_%d"),
-			request.created_date.strftime("%h:%M"),
-			request.facebook_id,
-		))
+		filename = "[%s__%s]_%s" % (
+				request.created_date.strftime("%Y_%m_%d"),
+				request.created_date.strftime("%H:%M"),
+				request.facebook_id,
+		)
+		
+		logger.debug(">> created filename: %s" % filename)
+		print("7")
+		
 		request.filename = filename
-		f = codecs.open(csv_filepath+".csv", "w", encoding="utf-8")
+		f = codecs.open(os.path.join(MEDIA_ROOT, "%s/%s.%s" % (CRAWLER_RESULTS, filename, "csv")), "w", encoding="utf-8")
 		f.write(result)
 		f.close()
+		
+		logger.debug(">> wrote to file: %s" % filename+".csv")
+		print("8")
 
-		## Generate pdf
-		#pdf_name = csv2pdf(csv_filepath)
-		#if pdf_name == '':
-		#	print('error generating pdf')
-		#else:
-		#	print(pdf_name+' generated successfully')
-
-		#request.pdf_filename = pdf_name
+		# Generate pdf
+		if request.generate_pdf:
+			try:
+				csv2pdf(csv_filepath)
+			except:
+				print('error generating pdf')
+				logger.error("Could not generate PDF")
 
 		## Mail:
 		##if user requested mail
@@ -83,12 +117,14 @@ class RequestHandler(threading.Thread):
 		#		[]#["tmp/"+options['filename']]#,pdf_name]
 		#	)
 		#	print('>>...done!')
-		
-		print "...done!"
 
 		# Update request status
 		request.status = "COM"
 		request.save()
+		
+		logger.debug(">> request status COM")
+		logger.debug("> request handler [done]")
+		print("9")
 		
 		# manage more
 		manage_requests()
