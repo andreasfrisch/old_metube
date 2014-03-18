@@ -1,0 +1,19 @@
+<html>
+	<head>
+		{% load staticfiles %}
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href={% static "blog/main.css" %} rel="stylesheet" type="text/css" media="all"/>
+		{{ blog_form.media }}
+	</head>
+	<body>
+		<a href={% url "blog_home" %}>Home</a>
+		<hr />
+		<form method="POST" action={% url "blog_edit" blog.pk %}>
+			{% csrf_token %}
+			<table>
+			{{ blog_form }}
+			</table>
+			<input type="submit" value="Submit Blog"/>
+		</form>
+	</body>
+</html>

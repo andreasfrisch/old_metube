@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'metube.project_tracker',
     'metube.fb_crawler',
+    'metube.blog',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -144,3 +145,8 @@ TEMPLATE_DIRS = (
 
 # Name of media folder for crawler result files
 CRAWLER_RESULTS = "crawler_results"
+
+
+TINYMCE_DEFAULT_CONFIG = {
+	"file_browser_callback": "mce_filebrowser",
+}
