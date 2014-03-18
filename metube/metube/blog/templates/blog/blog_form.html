@@ -20,7 +20,13 @@
 	<body>
 		<a href={% url "blog_home" %}>Home</a>
 		<hr />
-		<form method="POST" action={% url "blog_edit" blog.pk %}>
+		<form method="POST" action=
+			{% if existing_blog %}
+				{% url "blog_edit" blog_id %}
+			{% else %}
+				{% url "blog_new" %}
+			{% endif %}
+		>
 			{% csrf_token %}
 			{{ blog_form.title }}
 			{{ blog_form.content }}

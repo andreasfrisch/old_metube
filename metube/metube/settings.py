@@ -143,6 +143,9 @@ TEMPLATE_DIRS = (
 	os.path.join(BASE_DIR, "metube/templates"),		
 )
 
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/"
+
 # Name of media folder for crawler result files
 CRAWLER_RESULTS = "crawler_results"
 

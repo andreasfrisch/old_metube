@@ -7,7 +7,7 @@ class Blog(models.Model):
 	# author
 	date = models.DateTimeField(default=datetime.now())
 	title = models.CharField(max_length=200)
-	slug = models.SlugField(editable=False)
+	slug = models.SlugField()
 	content = models.TextField()
 
 	def __unicode__(self):
