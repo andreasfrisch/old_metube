@@ -1,2 +1,4 @@
 *.pyc
 static/
+media/crawler_results
+metube/db.sqlite3

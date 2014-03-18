@@ -7,7 +7,12 @@
 		<ul>All Requests
 		{% for crawl in crawl_requests %}
 		<li>[{{ crawl.created_date }}] {{ crawl.facebook_id }} -
-			{% if crawl.status == "COM" %}<a href={% url "crawler_get_file" "csv" crawl.pk %}>CSV</a>{% endif %}
+		{% if crawl.status == "COM" %}
+			<a href={% url "crawler_get_file" "csv" crawl.pk %}>CSV</a>
+			{% if crawl.generate_pdf %}
+				<a href={% url "crawler_get_file" "pdf" crawl.pk %}>PDF</a>
+			{% endif %}
+		{% endif %}
 		{% endfor %}
 		</ul>
 	</body>

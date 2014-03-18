@@ -11,7 +11,7 @@ from metube.fb_crawler.crawler.fb import handle_facebook_id
 from metube.settings import MEDIA_ROOT, CRAWLER_RESULTS
 from settings import APP_ID, APP_SECRET
 from dateutil import parser
-#from csv2pdf import csv2pdf
+from csv2pdf import csv2pdf
 
 gobject.threads_init()
 logger = logging.getLogger("metube")
@@ -90,7 +90,8 @@ class RequestHandler(threading.Thread):
 		print("7")
 		
 		request.filename = filename
-		f = codecs.open(os.path.join(MEDIA_ROOT, "%s/%s.%s" % (CRAWLER_RESULTS, filename, "csv")), "w", encoding="utf-8")
+		csv_file = os.path.join(MEDIA_ROOT, "%s/%s.%s" % (CRAWLER_RESULTS, filename, "csv"))
+		f = codecs.open(csv_file, "w", encoding="utf-8")
 		f.write(result)
 		f.close()
 		
@@ -99,11 +100,10 @@ class RequestHandler(threading.Thread):
 
 		# Generate pdf
 		if request.generate_pdf:
-			try:
-				csv2pdf(csv_filepath)
-			except:
-				print('error generating pdf')
-				logger.error("Could not generate PDF")
+			if csv2pdf(csv_file):
+				print("Successfully generated PDF")
+			else:
+				print("Failed at generating PDF")
 
 		## Mail:
 		##if user requested mail

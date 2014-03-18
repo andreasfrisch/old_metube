@@ -1,30 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import os
 import sys
 import re
 import subprocess
 import time
-from metube.settings import PDF_OUTPUT_DIRECTORY
+from metube.settings import MEDIA_ROOT, CRAWLER_RESULTS
 
-def csv2pdf(filepath):
+def csv2pdf(csv_filepath):
 	#Assert correct file type input
-	(fname, _, type) = filepath.rpartition('.')
-	if type != "csv":
-		print("please input an .csv-file")
-		return ''
+	(fname, _, type) = csv_filepath.rpartition('.')
+	#if type != "csv":
+	#	return ''
 
 	#Open input file for reading
-	try:
-		#print("Opening file: %s" % filepath)
-		input_file = open(filepath, "r", buffering=1)
-	except:
-		#print("No such file found")
-		return ''
+	input_file = open(csv_filepath, "r", buffering=1)
 
 	#Open output file for writing (replacing existing files)
 	output_name = fname + ".tex"
-	#print("Creating file: %s" %output_name)
 	output_file = open(output_name, "w")
 
 	#Generate tex-preamble
@@ -33,6 +26,8 @@ def csv2pdf(filepath):
 			"%\\usepackage{ucs}\n"+ \
 			"\\usepackage[danish]{babel}\n"+ \
 			"\\usepackage[T1]{fontenc}\n"+ \
+			"\\usepackage{fontspec,xunicode}\n"+ \
+			"\\setmainfont{Gentium}\n"+ \
 			"\\usepackage{url}\n"+ \
 			"%\\usepackage{colortbl}\n"+ \
 			"%\\usepackage{pdfpages}\n"+ \
@@ -99,9 +94,11 @@ def csv2pdf(filepath):
 	input_file.close()
 	output_file.close()
 
-	subprocess.call(["xelatex", "-interaction=nonstopmode", "-output-directory=%s" % PDF_OUTPUT_DIRECTORY, output_name])
+	pdf_output_directory = os.path.join(MEDIA_ROOT, CRAWLER_RESULTS)
+	#pdf_output_directory = "/var/www/metube.dk/media/crawler_results"
+	subprocess.call(["xelatex", "-interaction=nonstopmode", "-output-directory=%s" % pdf_output_directory, output_name])
 	
-	return fname.split("/")[-1]+".pdf"
+	return True
 
 if __name__ == '__main__':
 	csv2pdf(sys.argv[1])
