@@ -33,6 +33,7 @@
   		function checkLoginState() {
     		FB.getLoginStatus(function(response) {
     			if (response.status === 'connected') {
+    				console.log("User Token:");
     				console.log(response.authResponse.accessToken);
     			}
       		statusChangeCallback(response);
@@ -62,6 +63,7 @@
 
   		FB.getLoginStatus(function(response) {
   			if (response.status === 'connected') {
+    			console.log("User Token:");
   				console.log(response.authResponse.accessToken);
   			}
     		statusChangeCallback(response);
