@@ -139,6 +139,9 @@ def handle_facebook_id(facebook_id, options):
 			print(">>>> success! got a post")
 			if "data" in post_page:
 				print(">>>>\t post has data")
+				if post_page["data"] == []:
+					print("ERROR >>>>\tERROR: data is empty <<< ERROR")
+					done = True
 				for post in post_page["data"]:
 					post_created_time = parser.parse(post["created_time"]).date()
 					if post_created_time < options["from_date"]:

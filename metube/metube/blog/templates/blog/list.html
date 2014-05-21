@@ -20,9 +20,9 @@
 					<span class="blog_tags">
 						{% for tag in blog.tags.all %}
 							{% if forloop.last %}
-								<a href={% url "blog_tag" tag %}>{{ tag }}</a>
+								<a href="{% url "blog_tag" tag=tag.slug %}">{{ tag }}</a>
 							{% else %}
-								<a href={% url "blog_tag" tag %}>{{ tag }},</a>
+								<a href="{% url "blog_tag" tag=tag.slug %}">{{ tag }},</a>
 							{% endif %}
 						{% endfor %}
 					</span>
@@ -40,7 +40,7 @@
 			All tags:
 			<ul>
 				{% for tag in tags %}
-					<a href={% url "blog_tag" tag %}>{{ tag.title }}</a>
+					<a href={% url "blog_tag" tag=tag.slug %}>{{ tag }}</a>
 					<br />
 				{% endfor %}
 			</ul>

@@ -29,14 +29,14 @@
 			Related tags:
 			<ul>
 				{% for tag in blog.tags.all %}
-					<a href={% url "blog_tag" tag %}>{{ tag }}</a>
+				<a href={% url "blog_tag" tag=tag.slug %}>{{ tag }}</a>
 					<br />
 				{% endfor %}
 			</ul>
 			All tags:
 			<ul>
 				{% for tag in tags %}
-					<a href={% url "blog_tag" tag %}>{{ tag }}</a>
+					<a href={% url "blog_tag" tag=tag.slug %}>{{ tag }}</a>
 					<br />
 				{% endfor %}
 			</ul>
