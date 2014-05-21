@@ -40,7 +40,7 @@
 			All tags:
 			<ul>
 				{% for tag in tags %}
-					<a href={% url "blog_tag" tag %}>{{ tag }}</a>
+					<a href={% url "blog_tag" tag %}>{{ tag.title }}</a>
 					<br />
 				{% endfor %}
 			</ul>
