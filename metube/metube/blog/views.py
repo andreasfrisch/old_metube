@@ -57,7 +57,7 @@ def show(request, slug):
 
 def tag(request, tag):
 	content = {}
-	content["blogs"] = Blog.objects.filter(tags__title=tag)
+	content["blogs"] = Blog.objects.filter(tags__slug=tag)
 	content["tags"] = Tag.objects.all()
 	return render(request, "blog/list.html", content)
 

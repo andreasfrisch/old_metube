@@ -18,7 +18,7 @@ div.blog_container {
 	border: 1px solid #aaa;
 	background-color: #fff;
 	width: 800px;
-	height: 600px;
+	min-height: 600px;
 	float: left;
 	font-family: Gentium, serif;
 }
