@@ -15,7 +15,7 @@ def handle_comments(post_identifier, options):
 	comments = [] #storing comments for sorting
 
 	while not done:
-		h = httplib2.Http()
+		h = httplib2.Http(".cache", disable__ssl_certificate_validation=True)
 		url = "https://graph.facebook.com/{facebook_identifier}/comments?access_token={access_token}&limit={limit}&offset={offset}&filter=toplevel&fields=from,message,comments.limit(0),like_count,created_time".format(
 					facebook_identifier = post_identifier,
 					access_token = options["access_token"],
@@ -68,7 +68,7 @@ def handle_comments(post_identifier, options):
 
 def get_likes(post_identifier, options):
 	logger.debug("Getting likes for post: %s" % post_identifier)
-	h = httplib2.Http()
+	h = httplib2.Http(".cache", disable__ssl_certificate_validation=True)
 	url = "https://graph.facebook.com/" + post_identifier + "/likes" \
 		+ "?access_token=" + options["access_token"] \
 		+ "&summary=1"
@@ -129,7 +129,7 @@ def handle_facebook_id(facebook_id, options):
 					str(page*pageLimit)
 			)
 			print(">>> getting: %s" % url)
-			response, content = httplib2.Http().request(url, "GET")
+			response, content = httplib2.Http(".cache", disable__ssl_certificate_validation=True).request(url, "GET")
 			print(">>> success! parsing ...")
 			#post_page = content.decode(encoding="utf-8")
 			post_page = json.loads(content, "utf-8")
