@@ -56,7 +56,7 @@ class RequestHandler(threading.Thread):
 
 		# Perform!
 		# Get Access token
-		response, content = httplib2.Http(".cache", disable__ssl_certificate_validation=True).request(
+		response, content = httplib2.Http(".cache", disable_ssl_certificate_validation=True).request(
 				"https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials" % (APP_ID, APP_SECRET),
 				"GET"
 		)
