@@ -103,6 +103,7 @@ def handle_facebook_post(post, options):
 	try:
 		if "message" in post:
 			post_string += u"\"%s\"" % post["message"].replace('"',"'").replace("\n"," ") # text
+			print(post["message"])
 		elif "story" in post:
 			post_string += u"\"%s\"" % post["story"].replace('"',"'").replace("\n"," ") # text
 	except:
@@ -139,7 +140,7 @@ def handle_facebook_id(facebook_id, options):
 			print(">>>> success! got a post")
 			if "data" in post_page:
 				print(">>>>\t post has data")
-				print(">>>>\t\t %s" % post_page["data"])
+				#print(">>>>\t\t %s" % post_page["data"])
 				if post_page["data"] == []:
 					print("ERROR >>>>\tERROR: data is empty <<< ERROR")
 					done = True
