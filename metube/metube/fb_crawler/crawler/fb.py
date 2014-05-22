@@ -139,7 +139,7 @@ def handle_facebook_id(facebook_id, options):
 			print(">>>> success! got a post")
 			if "data" in post_page:
 				print(">>>>\t post has data")
-				print(">>>>\t\t %s" % post["data"])
+				print(">>>>\t\t %s" % post_page["data"])
 				if post_page["data"] == []:
 					print("ERROR >>>>\tERROR: data is empty <<< ERROR")
 					done = True
