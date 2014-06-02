@@ -12,11 +12,18 @@ def handle_comments(post_identifier, options):
 	pageLimit = 200
 	
 	comments = [] #storing comments for sorting
-	url = "https://graph.facebook.com/{facebook_identifier}/comments?access_token={access_token}&limit={limit}&filter=toplevel&fields=from,message,comments.limit(0),like_count,created_time".format(
+	#url = "https://graph.facebook.com/{facebook_identifier}/comments?access_token={access_token}&limit={limit}&filter=toplevel&fields=from,message,comments.limit(0),like_count,created_time".format(
+	#			facebook_identifier = post_identifier,
+	#			access_token = options["access_token"],
+	#			limit = pageLimit
+	#)
+	url = "https://graph.facebook.com/{facebook_identifier}/comments?access_token={access_token}&limit={limit}&filter=stream&fields=from,message,like_count,created_time".format(
 				facebook_identifier = post_identifier,
 				access_token = options["access_token"],
 				limit = pageLimit
 	)
+	logger.debug("url: %s" % url)
+	print("url: %s" % url)
 	response, content = httplib2.Http(".cache", disable_ssl_certificate_validation=True).request(url)
 	post_page = json.loads(content, "utf-8")
 
@@ -31,9 +38,13 @@ def handle_comments(post_identifier, options):
 			if "created_time" in comment:
 				comments.append((comment['created_time'],comment))	
 		if "paging" in post_page:
-			url = post_page["paging"]["next"]
-			response, content = httplib2.Http(".cache", disable_ssl_certificate_validation=True).request(url)
-			post_page = json.loads(content, "utf-8")
+			if "next" in post_page["paging"]:
+				url = post_page["paging"]["next"]
+				response, content = httplib2.Http(".cache", disable_ssl_certificate_validation=True).request(url)
+				post_page = json.loads(content, "utf-8")
+			else:
+				done = True
+				break
 		else:
 			done = True
 			break
@@ -84,7 +95,8 @@ def get_likes(post_identifier, options):
 		return "n/a"
 
 def handle_facebook_post(post, options):
-	logger.debug("Handle post: %s" % post)
+	logger.debug("Handling some post")
+	#logger.debug("Handle post: %s" % post)
 	post_datetime = parser.parse(post["created_time"])
 	comment_amount, comment_string = u"n/a", u""
 	if options["include_comments"]:
@@ -113,6 +125,7 @@ def handle_facebook_post(post, options):
 
 
 def handle_facebook_id(facebook_id, options):
+	logger.debug("Handling id: %s" % facebook_id)
 	result_string = ""
 	if facebook_id is not "":
 		done = False
@@ -122,10 +135,16 @@ def handle_facebook_id(facebook_id, options):
 				options["access_token"],
 				str(pageLimit),
 		)
+		logger.debug("url: %s" % url)
+		print("url: %s" % url)
+		response, content = httplib2.Http(
+				".cache",
+				disable_ssl_certificate_validation = True
+		).request(url, "GET")
 		post_page = json.loads(content, "utf-8")
-			.replace("false", "False")
-			.replace("true", "True")
-		)
+		#	.replace("false", "False")
+		#	.replace("true", "True")
+		#)
 		while not done:
 			print(">>> not done yet")
 			if "data" in post_page:
@@ -143,12 +162,16 @@ def handle_facebook_id(facebook_id, options):
 							and post_created_time < options["to_date"]:
 						result_string += handle_facebook_post(post, options)
 				if "paging" in post_page:
-					url = post_page["paging"]["next"]
-					response, content = httplib2.Http(
-							".cache",
-							disable_ssl_certificate_validation = True
-					).request(url, "GET")
-					post_page = json.loads(content, "utf-8")
+					if "next" in post_page["paging"]:
+						url = post_page["paging"]["next"]
+						response, content = httplib2.Http(
+								".cache",
+								disable_ssl_certificate_validation = True
+						).request(url, "GET")
+						post_page = json.loads(content, "utf-8")
+					else:
+						done = True
+						break
 				else:
 					print("ERROR >>>>\tERROR: no paging <<< ERROR")
 					done = True

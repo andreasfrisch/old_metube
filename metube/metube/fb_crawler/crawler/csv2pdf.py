@@ -28,13 +28,16 @@ def csv2pdf(csv_filepath):
 			"\\usepackage[T1]{fontenc}\n"+ \
 			"\\usepackage{fontspec,xunicode}\n"+ \
 			"\\setmainfont{Gentium}\n"+ \
-			"\\usepackage{url}\n"+ \
+			"\\usepackage[hyphens]{url}\n"+ \
+			"\\usepackage{fancyhdr}\n"+ \
 			"%\\usepackage{colortbl}\n"+ \
 			"%\\usepackage{pdfpages}\n"+ \
 			"\\usepackage{longtable}\n"+ \
 			"\\usepackage[margin=0.5cm]{geometry}\n"+ \
-			"\\setlength{\parindent}{0in}\n"+ \
-			"\\setlength{\parskip}{0.1in}\n"+ \
+			"\\setlength{\\parindent}{0in}\n"+ \
+			"\\setlength{\\parskip}{0.1in}\n"+ \
+			"\\pagestyle{fancy}\n"+ \
+			"\\cfoot{\\footnotesize \\thepage}\n"+ \
 			"\\begin{document}\n"+ \
 			"\\begin{longtable}{p{2cm} p{4cm} p{2cm} p{9cm} p{2cm}}\n"
 
