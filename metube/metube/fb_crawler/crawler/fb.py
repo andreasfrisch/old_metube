@@ -98,11 +98,11 @@ def handle_facebook_post(post, options):
 	logger.debug("Handling some post")
 	#logger.debug("Handle post: %s" % post)
 	post_datetime = parser.parse(post["created_time"])
-	comment_amount, comment_string = u"n/a", u""
-	if options["include_comments"]:
-		comment_amount, comment_string = handle_comments(post['id'], options)
-	else:
-		comment_amount, comment_string = u"n/a", u""
+	#get comment amount and comment texts
+	comment_amount, comment_string = handle_comments(post['id'], options)
+	#remove comment text if undesired
+	if not options["include_comments"]:
+		comment_string = u""
 	post_string = u""
 	post_string += u"Facebook," # type
 	post_string += u"%s," % post['from']['name']# name
