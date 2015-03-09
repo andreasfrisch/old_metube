@@ -6,8 +6,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'metube.views.home', name='home'),
     url(r'^facebook_crawler/', include('metube.fb_crawler.urls')),
-    url(r'^project_tracker/', include('metube.project_tracker.urls')),
-    url(r'^blog/', include('metube.blog.urls')),
     
     url(r'^admin/', include(admin.site.urls)),
 

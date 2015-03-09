@@ -164,6 +164,7 @@ def handle_facebook_id(facebook_id, options):
 				if "paging" in post_page:
 					if "next" in post_page["paging"]:
 						url = post_page["paging"]["next"]
+						print('>>> next URL: ',url)
 						response, content = httplib2.Http(
 								".cache",
 								disable_ssl_certificate_validation = True

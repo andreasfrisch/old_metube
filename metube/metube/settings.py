@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'ldw540jt*s^812brelt8^ap1qkhry2m^g5*7)4ui-qx6*^l!1t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 
@@ -36,9 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'metube.project_tracker',
     'metube.fb_crawler',
-    'metube.blog',
 )
 
 MIDDLEWARE_CLASSES = (

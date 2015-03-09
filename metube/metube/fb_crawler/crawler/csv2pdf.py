@@ -27,7 +27,6 @@ def csv2pdf(csv_filepath):
 			"\\usepackage[danish]{babel}\n"+ \
 			"\\usepackage[T1]{fontenc}\n"+ \
 			"\\usepackage{fontspec,xunicode}\n"+ \
-			"\\setmainfont{Gentium}\n"+ \
 			"\\usepackage[hyphens]{url}\n"+ \
 			"\\usepackage{fancyhdr}\n"+ \
 			"%\\usepackage{colortbl}\n"+ \
